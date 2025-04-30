@@ -61,7 +61,7 @@ yarn build
 ├── src/                # 源代码目录
 ├── public/            # 静态资源
 ├── backend/           # 后端服务
-├── docs/             # 文档
+├── docs/             # 打包后的文件
 └── screenshot/       # 项目截图
 ```
 
