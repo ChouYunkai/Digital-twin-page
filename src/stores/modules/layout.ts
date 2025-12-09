@@ -29,19 +29,19 @@ export const useLayoutStore = defineStore('app-layout', () => {
     defaultValue: {
       MonitorActive: {
         key: 'MonitorActive',
-        label: '声音信号',
+        label: '表面粗糙度监测',
         visible: true,
         updateTime: 1,
       },
       MonitorEnergy: {
         key: 'MonitorEnergy',
-        label: '4通道震动信号',
+        label: '尺寸精度监测',
         visible: true,
         updateTime: 2,
       },
       MonitorEnv: {
         key: 'MonitorEnv',
-        label: '运行状态',
+        label: '检测状态',
         visible: true,
         updateTime: 3,
       },
@@ -53,13 +53,13 @@ export const useLayoutStore = defineStore('app-layout', () => {
       },
       MonitorStatistics: {
         key: 'MonitorStatistics',
-        label: '参数监测',
+        label: '关键参数',
         visible: true,
         updateTime: 5,
       },
       MonitorYawAngle: {
         key: 'MonitorYawAngle',
-        label: '统计图表',
+        label: '指标趋势',
         visible: true,
         updateTime: 6,
       },

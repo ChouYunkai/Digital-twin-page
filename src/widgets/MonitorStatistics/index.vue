@@ -1,110 +1,130 @@
 <template>
-  <WidgetPanel title="参数监测">
+  <WidgetPanel title="轴瓦关键参数">
     <ul class="widget-rain">
       <li class="rain-item normal">
-        <span class="label">输出电流</span>
-        <span class="value">{{ data.Channel1 / 100 }}</span>
-        <span class="unit">An</span>
+        <span class="label">钢背硬度</span>
+        <span class="value">{{ inspectionData.hardness.steelBack.value }}</span>
+        <span class="unit">HB</span>
       </li>
       <li class="rain-item normal">
-        <span class="label">计数值</span>
-        <span class="value">{{ data.Channel2 }}</span>
-        <span class="unit">R</span>
+        <span class="label">铜基硬度</span>
+        <span class="value">{{
+          inspectionData.hardness.copperBase.value
+        }}</span>
+        <span class="unit">HB</span>
       </li>
       <li class="rain-item normal">
-        <span class="label">输出频率</span>
-        <span class="value">{{ data.Channel3 }}</span>
-        <span class="unit">Hz</span>
+        <span class="label">合金层硬度</span>
+        <span class="value">{{
+          inspectionData.hardness.alloyLayer.value
+        }}</span>
+        <span class="unit">HV</span>
       </li>
       <li class="rain-item normal">
-        <span class="label">输出电压值</span>
-        <span class="value">{{ data.Channel5 / 10 }}</span>
-        <span class="unit">V</span>
+        <span class="label">疲劳强度</span>
+        <span class="value">{{
+          inspectionData.mechanicalProperties.fatigueStrength.value
+        }}</span>
+        <span class="unit">MPa</span>
       </li>
-      <li class="rain-item warning">
-        <img class="icon" :src="alarm" />
-        <span class="label">输出功率</span>
-        <span class="value">{{ data.Channel7 / 10 }}</span>
-        <span class="unit">kW</span>
+      <li
+        :class="[
+          'rain-item',
+          inspectionData.tribologicalPerformance.frictionCoefficient.status ===
+          '合格'
+            ? 'normal'
+            : 'warning',
+        ]"
+      >
+        <img
+          v-if="
+            inspectionData.tribologicalPerformance.frictionCoefficient
+              .status !== '合格'
+          "
+          class="icon"
+          :src="alarm"
+        />
+        <span class="label">摩擦系数</span>
+        <span class="value">{{
+          inspectionData.tribologicalPerformance.frictionCoefficient.value
+        }}</span>
+        <span class="unit">μ</span>
       </li>
-      <li class="rain-item warning">
-        <img class="icon" :src="alarm" />
-        <span class="label">变频器状态</span>
-        <span class="value">{{ data.InverterStatus }}</span>
-        <!-- <span class="unit"></span> -->
+      <li
+        :class="[
+          'rain-item',
+          inspectionData.mechanicalProperties.compressiveStrength.status ===
+          '合格'
+            ? 'normal'
+            : 'warning',
+        ]"
+      >
+        <img
+          v-if="
+            inspectionData.mechanicalProperties.compressiveStrength.status !==
+            '合格'
+          "
+          class="icon"
+          :src="alarm"
+        />
+        <span class="label">抗压强度</span>
+        <span class="value">{{
+          inspectionData.mechanicalProperties.compressiveStrength.value
+        }}</span>
+        <span class="unit">MPa</span>
       </li>
-      <li class="rain-item warning">
-        <img class="icon" :src="alarm" />
-        <span class="label">马达实际速度</span>
-        <span class="value">{{ data.Channel8 }}</span>
-        <span class="unit">rPm</span>
+      <li
+        :class="[
+          'rain-item',
+          inspectionData.materialComposition.bondingStrength.status === '合格'
+            ? 'normal'
+            : 'warning',
+        ]"
+      >
+        <img
+          v-if="
+            inspectionData.materialComposition.bondingStrength.status !== '合格'
+          "
+          class="icon"
+          :src="alarm"
+        />
+        <span class="label">层间结合强度</span>
+        <span class="value">{{
+          inspectionData.materialComposition.bondingStrength.value
+        }}</span>
+        <span class="unit">MPa</span>
       </li>
-      <li class="rain-item">
-        <img class="icon" :src="alarm" />
-        <span class="label">输出转矩</span>
-        <span class="value">{{ data.Channel9 }}</span>
-        <span class="unit">%</span>
+      <li
+        :class="[
+          'rain-item',
+          inspectionData.surfaceQuality.roughness.status === '合格'
+            ? 'normal'
+            : 'warning',
+        ]"
+      >
+        <img
+          v-if="inspectionData.surfaceQuality.roughness.status !== '合格'"
+          class="icon"
+          :src="alarm"
+        />
+        <span class="label">表面粗糙度</span>
+        <span class="value">{{
+          inspectionData.surfaceQuality.roughness.value
+        }}</span>
+        <span class="unit">Ra</span>
       </li>
     </ul>
   </WidgetPanel>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import axios from 'axios';
-import alarm from '@/assets/icons/alarm.png';
-import WidgetPanel from '../WidgetPanel.vue';
+import { computed } from 'vue'
+import alarm from '@/assets/icons/alarm.png'
+import { bearingBushInspectionData } from '@/constants/bearingBushInspection'
+import WidgetPanel from '../WidgetPanel.vue'
 
-// 数据类型定义
-interface Series {
-  name: string;
-  data: number[];
-}
-
-// 响应式数据
-const data = ref({
-  Channel1: 0,
-  Channel2: 0,
-  Channel3: 0,
-  Channel5: 0,
-  Channel7: 0,
-  Channel8: 0,
-  Channel9: 0,
-  InverterStatus: '正常', // 假设默认值为 '正常'
-});
-
-// 获取数据的函数
-const fetchData = async () => {
-  try {
-    const response = await axios.get('http://localhost:3000/api/chart-data');
-    console.log('API response:', response.data); // 调试信息
-    const chartData = response.data.rtuData;
-
-    // 更新响应式数据
-    data.value = {
-      Channel1: chartData.series.find((s: Series) => s.name === 'Channel1')?.data[0] || 0,
-      Channel2: chartData.series.find((s: Series) => s.name === 'Channel2')?.data[0] || 0,
-      Channel3: chartData.series.find((s: Series) => s.name === 'Channel3')?.data[0] || 0,
-      Channel5: chartData.series.find((s: Series) => s.name === 'Channel5')?.data[0] || 0,
-      Channel7: chartData.series.find((s: Series) => s.name === 'Channel7')?.data[0] || 0,
-      Channel8: chartData.series.find((s: Series) => s.name === 'Channel8')?.data[0] || 0,
-      Channel9: chartData.series.find((s: Series) => s.name === 'Channel9')?.data[0] || 0,
-      InverterStatus: '正常' // 根据实际情况更新
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-// 组件挂载后获取数据
-onMounted(() => {
-  fetchData();
-  // 每秒获取一次数据
-  const intervalId = setInterval(fetchData, 1000);
-  
-  // 确保组件卸载时清除定时器
-  onBeforeUnmount(() => clearInterval(intervalId));
-});
+// 使用检测数据
+const inspectionData = computed(() => bearingBushInspectionData)
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <BaseCollaspse title="面板控制">
+  <BaseCollaspse title="监测面板控制">
     <BaseCheckbox
       v-for="{ key, visible, label } in layoutModules"
       :key="key"

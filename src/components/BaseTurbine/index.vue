@@ -22,18 +22,24 @@
 <script setup lang="ts">
 import { provide } from 'vue'
 import { IconLoading } from '@arco-design/web-vue/es/icon'
-import { useTurbine } from './hooks/useTurbine'  // 使用index.ts默认导出
+import { useTurbine } from './hooks/useTurbine' // 使用index.ts默认导出
 
 const {
   container,
   loading,
   equipmentComposeAnimation, // 设备合成动画
   equipmentDecomposeAnimation, // 设备分解动画
+  switchToBearingBush, // 切换到轴瓦模型
+  switchToEquipment, // 切换到equipment模型
+  currentModelType, // 当前模型类型
 } = useTurbine()
 
 provide('turbineActions', {
   equipmentComposeAnimation,
   equipmentDecomposeAnimation,
+  switchToBearingBush,
+  switchToEquipment,
+  currentModelType,
 })
 </script>
 <style lang="scss" scoped>

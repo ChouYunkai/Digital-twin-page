@@ -8,7 +8,8 @@ export const MODEL_EQUIPMENT_ENUM = {
   ROTOR: '转子',
   AIR_COOLING_PLANT: '风冷装置',
   GEARBOX: '齿轮箱',
-} as const  // 涉及到爆炸图
+  BEARING_BUSH: '轴瓦',
+} as const // 涉及到爆炸图
 
 export const MODEL_EQUIPMENT_POSITION_PARAMS_ENUM = {
   [MODEL_EQUIPMENT_ENUM.PRINCIPAL_AXIS]: {
@@ -46,5 +47,9 @@ export const MODEL_EQUIPMENT_POSITION_PARAMS_ENUM = {
   [MODEL_EQUIPMENT_ENUM.GEARBOX]: {
     COMPOSE: { x: 20437.78515625, y: 8650, z: 0 },
     DECOMPOSE: { x: 20437.78515625, y: 8650, z: 100 },
+  },
+  [MODEL_EQUIPMENT_ENUM.BEARING_BUSH]: {
+    COMPOSE: { x: 0, y: 0, z: 0 },
+    DECOMPOSE: { x: 0, y: 0, z: 0 },
   },
 } as any

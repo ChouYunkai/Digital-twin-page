@@ -3,5 +3,5 @@
 </template>
 <script setup lang="ts">
 interface PropsType {}
-const props = defineProps<PropsType>()
+defineProps<PropsType>()
 </script>
