@@ -57,7 +57,40 @@ export function useTurbine() {
     sideLight.position.set(-10, 0, 5)
     scene.value?.add(sideLight)
   }
+  // --------------------------------------------------------------------------------
+  // 2. 相机聚焦辅助：使传入模型居中显示 **（已实现所需功能）**
+  // --------------------------------------------------------------------------------
+  const focusOnObject = (object?: THREE.Object3D, padding = 1.6) => {
+    if (!object || !camera.value || !control.value) return
 
+    // 确保对象的世界矩阵已更新
+    object.updateMatrixWorld(true)
+
+    const box = new THREE.Box3().setFromObject(object)
+    const size = new THREE.Vector3()
+    const center = new THREE.Vector3()
+    box.getSize(size)
+    box.getCenter(center)
+
+    // 检查边界框是否有效
+    if (size.x === 0 && size.y === 0 && size.z === 0) {
+      // 如果边界框无效，使用默认位置
+      return
+    }
+
+    const maxDim = Math.max(size.x, size.y, size.z)
+    const distance = (maxDim || 1) * padding
+    // 采用对角方向拉开距离，避免与模型重合
+    const offset = new THREE.Vector3(1, 1, 1)
+      .normalize()
+      .multiplyScalar(distance)
+    const newPosition = center.clone().add(offset)
+
+    camera.value.position.copy(newPosition)
+    camera.value.lookAt(center)
+    control.value.target.copy(center)
+    control.value.update()
+  }
   // ... (中间的加载函数: loadTurbineSkeleton, loadTurbinePlane, unloadTurbineEquipments, loadTurbineEquipments 保持不变)
   const loadTurbineSkeleton = async () => {
     /* ... */
@@ -87,7 +120,7 @@ export function useTurbine() {
   const loadTurbineEquipments = async () => {
     const { scene: object } = await loadGLTF(MODEL_URL.EQUIPMENT)
     object.scale.set(...MODEL_SCALES)
-    object.position.set(0, 1.3, 0)
+    object.position.set(0, 11.7, 0)
     object.name = 'equipment'
     modelEquipment.value = object
     turbine.add(object)
@@ -263,7 +296,7 @@ export function useTurbine() {
     const bearingBushModel = createBearingBushGeometry()
     bearingBushModel.scale.set(0.8, 0.8, 0.8)
     // 调整位置
-    bearingBushModel.position.set(0, 2.0, 0)
+    bearingBushModel.position.set(0, 12.0, 0)
     bearingBushModel.name = 'bearingBushAssembly'
     modelBearingBush.value = bearingBushModel
     turbine.add(bearingBushModel)
@@ -357,8 +390,8 @@ export function useTurbine() {
     bearingBushAnimation()
 
     // 调整相机聚焦
-    control.value?.target.set(0, 2, 0)
-    camera.value?.position.set(4, 4, 6)
+    control.value?.target.set(0, 12, 0)
+    camera.value?.position.set(4, 14, 6)
     control.value?.update()
 
     loading.value = false
@@ -375,8 +408,8 @@ export function useTurbine() {
     planeAnimation()
 
     // 恢复相机
-    control.value?.target.set(0, 2, 0)
-    camera.value?.position.set(-8, 5, 13)
+    control.value?.target.set(0, 12, 0)
+    camera.value?.position.set(-8, 15, 13)
     control.value?.update()
 
     loading.value = false
@@ -392,8 +425,8 @@ export function useTurbine() {
   onMounted(async () => {
     loading.value = true
     scene.value?.add(turbine)
-    camera.value?.position.set(-8, 5, 13)
-    control.value?.target.set(0, 2, 0)
+    camera.value?.position.set(-8, 15, 13)
+    control.value?.target.set(0, 12, 0)
     control.value?.update()
 
     loadLights()

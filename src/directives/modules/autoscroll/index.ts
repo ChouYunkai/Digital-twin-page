@@ -1,4 +1,4 @@
-import type { App, Directive } from 'vue'// 自动滚动
+import type { App, Directive } from 'vue' // 自动滚动
 
 enum Config {
   directiveName = 'autoscroll',

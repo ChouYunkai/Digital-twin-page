@@ -15,11 +15,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue}": [
-      "yarn lint",
-      "yarn prettier:format"
+      "pnpm run lint",
+      "pnpm run prettier:format"
     ],
     "*.{html,css,sass,scss,vue}": [
-      "yarn lint:style"
+      "pnpm run lint:style"
     ]
   },
   "dependencies": {

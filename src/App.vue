@@ -48,6 +48,3 @@ import Witgets from './widgets' // 导入 Witgets 组件集合
 // 从布局状态管理中解构出 chunkModules
 const { chunkModules } = storeToRefs(useLayoutStore())
 </script>
-
-<style scoped>
-</style>

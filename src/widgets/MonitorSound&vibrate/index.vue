@@ -59,59 +59,61 @@ onMounted(() => {
       credits: { enabled: false }, // 禁用图表版权信息
       chart: {
         type: 'line', // 图表类型为折线图
-        backgroundColor: 'rgba(11, 101, 140, 0.26)' // 背景颜色为透明
+        backgroundColor: 'rgba(11, 101, 140, 0.26)', // 背景颜色为透明
       },
       boost: {
-        useGPUTranslations: true // 启用 GPU 加速
+        useGPUTranslations: true, // 启用 GPU 加速
       },
       title: false, // 禁用图表标题
-    //   title: {
-    //     text: `声音震动 ${n} 信号`, // 图表标题
-    //     style: {
-    //       color: '#fff', // 图例文本颜色
-    //       fontSize: '14px', // 图例字体大小
-    //   fontWeight: 'bold',// 设置字体加粗
-    //   lineHeight: '30px', // 图例行高
-    // }
+      //   title: {
+      //     text: `声音震动 ${n} 信号`, // 图表标题
+      //     style: {
+      //       color: '#fff', // 图例文本颜色
+      //       fontSize: '14px', // 图例字体大小
+      //   fontWeight: 'bold',// 设置字体加粗
+      //   lineHeight: '30px', // 图例行高
+      // }
       // },
-    //   legend: {
-    //   align: 'right', // 图例对齐方式
-    //   verticalAlign: 'top', // 图例垂直对齐方式
-    //   itemStyle: {
-    //     color: '#fff', // 图例文本颜色
-    //     fontSize: '14px', // 图例字体大小
-    //     lineHeight: '30px', // 图例行高
-    //   },
-    // },
+      //   legend: {
+      //   align: 'right', // 图例对齐方式
+      //   verticalAlign: 'top', // 图例垂直对齐方式
+      //   itemStyle: {
+      //     color: '#fff', // 图例文本颜色
+      //     fontSize: '14px', // 图例字体大小
+      //     lineHeight: '30px', // 图例行高
+      //   },
+      // },
       plotOptions: {
-      pie: {
-        innerSize: 50, // 设置图的内径大小
-        depth: 40, // 设置图的深度
-        allowPointSelect: true, // 允许选择点
-        cursor: 'pointer', // 鼠标悬停时显示指针
-        dataLabels: {
-          enabled: false, // 禁用数据标签
+        pie: {
+          innerSize: 50, // 设置图的内径大小
+          depth: 40, // 设置图的深度
+          allowPointSelect: true, // 允许选择点
+          cursor: 'pointer', // 鼠标悬停时显示指针
+          dataLabels: {
+            enabled: false, // 禁用数据标签
+          },
+          showInLegend: true, // 在图例中显示
         },
-        showInLegend: true, // 在图例中显示
       },
-    },
-    //   subtitle: {
-    //     text: '副标题', // 图表副标题
-    //     style: {
-    //       color: '#fff', // 图例文本颜色
-    //       fontSize: '14px', // 图例字体大小
-    //   fontWeight: 'bold',// 设置字体加粗
-    //   lineHeight: '30px', // 图例行高
-    // }
-    //   },
+      //   subtitle: {
+      //     text: '副标题', // 图表副标题
+      //     style: {
+      //       color: '#fff', // 图例文本颜色
+      //       fontSize: '14px', // 图例字体大小
+      //   fontWeight: 'bold',// 设置字体加粗
+      //   lineHeight: '30px', // 图例行高
+      // }
+      //   },
       tooltip: {
-        valueDecimals: 2 // 工具提示中的值保留两位小数
+        valueDecimals: 2, // 工具提示中的值保留两位小数
       },
-      series: [{
-        type: 'line', // 系列类型为折线图
-        data, // 图表数据
-        lineWidth: 0.5 // 线宽
-      }]
+      series: [
+        {
+          type: 'line', // 系列类型为折线图
+          data, // 图表数据
+          lineWidth: 0.5, // 线宽
+        },
+      ],
     }
     // 渲染图表到 chartContainer 所指向的 DOM 元素
     Highcharts.chart(chartContainer.value, options)

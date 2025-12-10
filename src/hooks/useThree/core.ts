@@ -9,7 +9,7 @@ class ThreeBase {
   }
 
   static initCamera(element: HTMLElement) {
-    const fov = 20
+    const fov = 5
     const near = 0.1
     const far = 2000
     const aspect = element.offsetWidth / element.offsetHeight
