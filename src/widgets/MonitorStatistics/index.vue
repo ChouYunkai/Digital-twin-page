@@ -3,28 +3,28 @@
     <ul class="widget-rain">
       <li class="rain-item normal">
         <span class="label">输出电流</span>
-        <span class="value">{{ data.Channel1 / 100 }}</span>
+        <span class="value">{{ (data.Channel1 / 100).toFixed(1) }}</span>
         <span class="unit">An</span>
       </li>
       <li class="rain-item normal">
         <span class="label">计数值</span>
-        <span class="value">{{ data.Channel2 }}</span>
+        <span class="value">{{ data.Channel2.toFixed(1) }}</span>
         <span class="unit">R</span>
       </li>
       <li class="rain-item normal">
         <span class="label">输出频率</span>
-        <span class="value">{{ data.Channel3 }}</span>
+        <span class="value">{{ data.Channel3.toFixed(1) }}</span>
         <span class="unit">Hz</span>
       </li>
       <li class="rain-item normal">
         <span class="label">输出电压值</span>
-        <span class="value">{{ data.Channel5 / 10 }}</span>
+        <span class="value">{{ (data.Channel5 / 10).toFixed(1) }}</span>
         <span class="unit">V</span>
       </li>
       <li class="rain-item warning">
         <img class="icon" :src="alarm" />
         <span class="label">输出功率</span>
-        <span class="value">{{ data.Channel7 / 10 }}</span>
+        <span class="value">{{ (data.Channel7 / 10).toFixed(1) }}</span>
         <span class="unit">kW</span>
       </li>
       <li class="rain-item warning">
@@ -36,13 +36,13 @@
       <li class="rain-item warning">
         <img class="icon" :src="alarm" />
         <span class="label">马达实际速度</span>
-        <span class="value">{{ data.Channel8 }}</span>
+        <span class="value">{{ data.Channel8.toFixed(1) }}</span>
         <span class="unit">rPm</span>
       </li>
       <li class="rain-item">
         <img class="icon" :src="alarm" />
         <span class="label">输出转矩</span>
-        <span class="value">{{ data.Channel9 }}</span>
+        <span class="value">{{ data.Channel9.toFixed(1) }}</span>
         <span class="unit">%</span>
       </li>
     </ul>
@@ -50,15 +50,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import axios from 'axios';
-import alarm from '@/assets/icons/alarm.png';
-import WidgetPanel from '../WidgetPanel.vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import alarm from '@/assets/icons/alarm.png'
+import { getMockChartData } from '@/utils/mockData'
+import WidgetPanel from '../WidgetPanel.vue'
 
 // 数据类型定义
 interface Series {
-  name: string;
-  data: number[];
+  name: string
+  data: number[]
 }
 
 // 响应式数据
@@ -71,40 +71,54 @@ const data = ref({
   Channel8: 0,
   Channel9: 0,
   InverterStatus: '正常', // 假设默认值为 '正常'
-});
+})
 
 // 获取数据的函数
 const fetchData = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/chart-data');
-    console.log('API response:', response.data); // 调试信息
-    const chartData = response.data.rtuData;
+    const response = await getMockChartData()
+    console.log('Mock API response:', response) // 调试信息
+    const chartData = response.rtuData
 
     // 更新响应式数据
     data.value = {
-      Channel1: chartData.series.find((s: Series) => s.name === 'Channel1')?.data[0] || 0,
-      Channel2: chartData.series.find((s: Series) => s.name === 'Channel2')?.data[0] || 0,
-      Channel3: chartData.series.find((s: Series) => s.name === 'Channel3')?.data[0] || 0,
-      Channel5: chartData.series.find((s: Series) => s.name === 'Channel5')?.data[0] || 0,
-      Channel7: chartData.series.find((s: Series) => s.name === 'Channel7')?.data[0] || 0,
-      Channel8: chartData.series.find((s: Series) => s.name === 'Channel8')?.data[0] || 0,
-      Channel9: chartData.series.find((s: Series) => s.name === 'Channel9')?.data[0] || 0,
-      InverterStatus: '正常' // 根据实际情况更新
-    };
+      Channel1:
+        chartData.series.find((s: Series) => s.name === 'Channel1')?.data[0] ||
+        0,
+      Channel2:
+        chartData.series.find((s: Series) => s.name === 'Channel2')?.data[0] ||
+        0,
+      Channel3:
+        chartData.series.find((s: Series) => s.name === 'Channel3')?.data[0] ||
+        0,
+      Channel5:
+        chartData.series.find((s: Series) => s.name === 'Channel5')?.data[0] ||
+        0,
+      Channel7:
+        chartData.series.find((s: Series) => s.name === 'Channel7')?.data[0] ||
+        0,
+      Channel8:
+        chartData.series.find((s: Series) => s.name === 'Channel8')?.data[0] ||
+        0,
+      Channel9:
+        chartData.series.find((s: Series) => s.name === 'Channel9')?.data[0] ||
+        0,
+      InverterStatus: '正常', // 根据实际情况更新
+    }
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error)
   }
-};
+}
 
 // 组件挂载后获取数据
 onMounted(() => {
-  fetchData();
+  fetchData()
   // 每秒获取一次数据
-  const intervalId = setInterval(fetchData, 1000);
-  
+  const intervalId = setInterval(fetchData, 1000)
+
   // 确保组件卸载时清除定时器
-  onBeforeUnmount(() => clearInterval(intervalId));
-});
+  onBeforeUnmount(() => clearInterval(intervalId))
+})
 </script>
 
 <style lang="scss" scoped>

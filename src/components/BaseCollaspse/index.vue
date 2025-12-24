@@ -30,7 +30,7 @@ interface PropsType {
   title: string
   icon?: any
 }
-const props = defineProps<PropsType>()
+defineProps<PropsType>()
 </script>
 <style lang="scss" scoped>
 .base-collaspse {

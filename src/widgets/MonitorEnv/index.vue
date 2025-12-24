@@ -31,13 +31,15 @@ onMounted(() => {
       },
     },
     legend: {
-      align: 'right', // 图例对齐方式
-      verticalAlign: 'top', // 图例垂直对齐方式
+      align: 'center', // 图例对齐方式
+      verticalAlign: 'bottom', // 图例垂直对齐方式
+      layout: 'horizontal', // 水平布局
       itemStyle: {
         color: '#fff', // 图例文本颜色
-        fontSize: '14px', // 图例字体大小
-        lineHeight: '30px', // 图例行高
+        fontSize: '12px', // 图例字体大小
+        lineHeight: '20px', // 图例行高
       },
+      itemMarginBottom: 5, // 图例项之间的间距
     },
     title: false, // 禁用图表标题
     plotOptions: {

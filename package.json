@@ -15,11 +15,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue}": [
-      "yarn lint",
-      "yarn prettier:format"
+      "eslint --fix",
+      "prettier --config .prettierrc.cjs --write"
     ],
     "*.{html,css,sass,scss,vue}": [
-      "yarn lint:style"
+      "stylelint --fix"
     ]
   },
   "dependencies": {

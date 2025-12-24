@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
 import Highcharts, { Options } from 'highcharts'
 import boost from 'highcharts/modules/boost'
-import axios from 'axios'
+import { getMockChartData } from '@/utils/mockData'
 import WidgetPanel from '../WidgetPanel.vue'
 
 // 激活 Boost 模块以提高图表性能
@@ -17,8 +17,8 @@ boost(Highcharts)
 // 禁用 UTC，使用本地时间
 Highcharts.setOptions({
   time: {
-    useUTC: false
-  }
+    useUTC: false,
+  },
 })
 
 // 常量
@@ -39,24 +39,27 @@ const updateChart = (chart: Highcharts.Chart) => {
   const { series } = chart
   const [series0] = series
 
-  setInterval(async () => {
+  const intervalId = setInterval(async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/chart-data')
-      const { adcData } = response.data
+      const response = await getMockChartData()
+      const { adcData } = response
       const newPoint: [number, number] = [
         new Date().getTime(),
-        adcData.series.find(
-          (s: { name: string }) => s.name === 'Channel1'
-        )?.data[0] || 0
+        adcData.series.find((s: { name: string }) => s.name === 'Channel1')
+          ?.data[0] || 0,
       ]
       series0.addPoint(newPoint, true, true)
     } catch (error) {
       console.error('Error fetching data:', error)
     }
   }, UPDATE_INTERVAL)
+
+  // 存储intervalId以便清理（如果需要的话，可以在组件卸载时清理）
+  return intervalId
 }
 
 const chartContainer = ref<HTMLElement | null>(null)
+let updateIntervalId: ReturnType<typeof setInterval> | null = null
 
 onMounted(() => {
   if (chartContainer.value) {
@@ -69,12 +72,12 @@ onMounted(() => {
         backgroundColor: 'transparent', // 图表背景设置为透明
         events: {
           load() {
-            updateChart(this as Highcharts.Chart)
-          }
-        }
+            updateIntervalId = updateChart(this as Highcharts.Chart)
+          },
+        },
       },
       title: {
-        text: null // 禁用图表标题
+        text: null, // 禁用图表标题
       },
       credits: { enabled: false }, // 禁用图表版权信息
       xAxis: {
@@ -84,9 +87,9 @@ onMounted(() => {
         tickColor: '#FFFFFF', // X轴刻度线的颜色
         labels: {
           style: {
-            color: '#FFFFFF' // X轴标签文字的颜色
-          }
-        }
+            color: '#FFFFFF', // X轴标签文字的颜色
+          },
+        },
       },
       yAxis: {
         title: { text: null },
@@ -94,9 +97,9 @@ onMounted(() => {
         tickColor: '#FFFFFF', // Y轴刻度线的颜色
         labels: {
           style: {
-            color: '#FFFFFF' // Y轴标签文字的颜色
-          }
-        }
+            color: '#FFFFFF', // Y轴标签文字的颜色
+          },
+        },
       },
       tooltip: {
         shared: false, // 确保tooltip只在鼠标悬停时显示
@@ -106,24 +109,28 @@ onMounted(() => {
             '%Y-%m-%d %H:%M:%S',
             this.x as number
           )
-          const formattedValue = Highcharts.numberFormat(
-            this.y as number,
-            2
-          )
+          const formattedValue = Highcharts.numberFormat(this.y as number, 2)
           return `<b>${seriesName}</b><br/>${formattedDate}<br/>${formattedValue}`
-        }
+        },
       },
       legend: { enabled: false },
       series: [
         {
           name: '频率',
           type: 'spline',
-          data: initialData
-        }
-      ]
+          data: initialData,
+        },
+      ],
     }
     Highcharts.chart(chartContainer.value as HTMLElement, chartOptions)
   }
+
+  // 确保组件卸载时清除定时器
+  onBeforeUnmount(() => {
+    if (updateIntervalId !== null) {
+      clearInterval(updateIntervalId)
+    }
+  })
 })
 </script>
 

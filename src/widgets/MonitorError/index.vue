@@ -73,15 +73,19 @@ const dataSource = reactive([
 ])
 
 // 定时器更新时间
+let interval: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
-  const interval = setInterval(() => {
-    dataSource.forEach(item => {
+  interval = setInterval(() => {
+    dataSource.forEach((item) => {
       item.time = new Date().toLocaleString()
     })
   }, 1000) // 每秒更新一次
+})
 
-  onUnmounted(() => {
+onUnmounted(() => {
+  if (interval !== null) {
     clearInterval(interval)
-  })
+  }
 })
 </script>
